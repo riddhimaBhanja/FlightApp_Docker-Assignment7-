@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Booking Service,com.flightapp.booking.messaging,EmailService,0,29,0,0,0,8,0,3,0,3
+Booking Service,com.flightapp.booking.messaging,EmailConsumer,0,55,0,0,0,14,0,4,0,4
+Booking Service,com.flightapp.booking.controller,BookingController,0,67,0,0,0,21,0,8,0,8
+Booking Service,com.flightapp.booking.service,BookingServiceImpl,28,343,0,10,11,93,2,20,2,15
+Booking Service,com.flightapp.booking.exception,BookingNotFoundException,0,4,0,0,0,2,0,1,0,1
+Booking Service,com.flightapp.booking.exception,BookingAlreadyCancelledException,0,4,0,0,0,2,0,1,0,1
+Booking Service,com.flightapp.booking.exception,SeatOperationException,0,4,0,0,0,2,0,1,0,1
+Booking Service,com.flightapp.booking.exception,FlightNotFoundException,0,4,0,0,0,2,0,1,0,1
+Booking Service,com.flightapp.booking.exception,InsufficientSeatsException,0,4,0,0,0,2,0,1,0,1
