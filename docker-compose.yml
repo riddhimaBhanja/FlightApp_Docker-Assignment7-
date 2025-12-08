@@ -20,6 +20,26 @@ services:
       timeout: 5s
       retries: 5
 
+  # MySQL Database for Auth Service
+  mysql-auth:
+    image: mysql:8.0
+    container_name: auth-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flightapp_auth
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql-auth-data:/var/lib/mysql
+      - ./auth-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - flightapp-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # MongoDB Database for Booking Service
   mongodb:
     image: mongo:7.0
@@ -194,6 +214,39 @@ services:
       start_period: 60s
     restart: on-failure
 
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+    container_name: auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_SERVER: http://eureka-server:8761/eureka/
+      DB_HOST: mysql-auth
+      DB_PORT: 3306
+      DB_NAME: flightapp_auth
+      DB_USER: root
+      DB_PASSWORD: root
+      JWT_SECRET: mySecretKeyForJWTTokenGenerationAndValidationMustBeLongEnough1234567890
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8084:8084"
+    depends_on:
+      mysql-auth:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - flightapp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: on-failure
+
   # API Gateway
   api-gateway:
     build:
@@ -209,6 +262,8 @@ services:
       - "8080:8080"
     depends_on:
       eureka-server:
+        condition: service_healthy
+      auth-service:
         condition: service_healthy
       flight-service:
         condition: service_healthy
@@ -232,5 +287,6 @@ networks:
 
 volumes:
   mysql-data:
+  mysql-auth-data:
   mongodb-data:
   rabbitmq-data:
