@@ -90,9 +90,11 @@ flightapp-docker/
 ├── run-tests.sh                       # Automated test script (Linux/Mac)
 └── run-tests.bat                      # Automated test script (Windows)
 ```
+## System Architecture
+---
+<img width="1613" height="1360" alt="Architecture-Diagram" src="https://github.com/user-attachments/assets/a6a837a2-7d13-4598-a143-b8279fbbd0c2" />
 
 ---
-
 ## Prerequisites
 
 * Java 17+
@@ -119,6 +121,10 @@ docker-compose up --build
 | API Gateway      | [http://localhost:8080](http://localhost:8080)   |
 
 ---
+
+## ER Diagram
+
+![ER Diagram(auth service)](https://github.com/user-attachments/assets/8667ff0f-3f2a-4cbf-923f-8249a6b4a737)
 
 ## Authentication
 
