@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FlightServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Flight Service</a> &gt; <a href="index.source.html" class="el_package">com.flightapp.flight.service</a> &gt; <span class="el_source">FlightServiceImpl.java</span></div><h1>FlightServiceImpl.java</h1><pre class="source lang-java linenums">package com.flightapp.flight.service;
+
+import com.flightapp.flight.dto.FlightInventoryRequest;
+import com.flightapp.flight.dto.FlightSearchRequest;
+import com.flightapp.flight.entity.FlightInventory;
+import com.flightapp.flight.repository.FlightInventoryRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+@Service
+<span class="fc" id="L17">@RequiredArgsConstructor</span>
+<span class="fc" id="L18">@Slf4j</span>
+public class FlightServiceImpl implements FlightService {
+
+    private final FlightInventoryRepository flightInventoryRepository;
+
+    @Override
+    public Flux&lt;FlightInventory&gt; searchFlights(FlightSearchRequest request) {
+<span class="fc" id="L25">        LocalDateTime startOfDay = request.getTravelDate().atStartOfDay();</span>
+<span class="fc" id="L26">        LocalDateTime endOfDay = request.getTravelDate().atTime(LocalTime.MAX);</span>
+
+<span class="fc" id="L28">        return flightInventoryRepository</span>
+<span class="fc" id="L29">                .findByOriginAndDestinationAndDepartureTimeBetween(</span>
+<span class="fc" id="L30">                        request.getOrigin(),</span>
+<span class="fc" id="L31">                        request.getDestination(),</span>
+                        startOfDay,
+                        endOfDay)
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">                .filter(flight -&gt; flight.getAvailableSeats() &gt; 0)</span>
+<span class="fc" id="L35">                .doOnNext(flight -&gt; log.info(&quot;Found flight: {}&quot;, flight.getFlightNumber()));</span>
+    }
+
+    @Override
+    public Mono&lt;FlightInventory&gt; addInventory(FlightInventoryRequest request) {
+<span class="fc" id="L40">        FlightInventory inventory = FlightInventory.builder()</span>
+<span class="fc" id="L41">                .flightNumber(request.getFlightNumber())</span>
+<span class="fc" id="L42">                .airline(request.getAirline())</span>
+<span class="fc" id="L43">                .origin(request.getOrigin())</span>
+<span class="fc" id="L44">                .destination(request.getDestination())</span>
+<span class="fc" id="L45">                .departureTime(request.getDepartureTime())</span>
+<span class="fc" id="L46">                .arrivalTime(request.getArrivalTime())</span>
+<span class="fc" id="L47">                .availableSeats(request.getAvailableSeats())</span>
+<span class="fc" id="L48">                .price(request.getPrice())</span>
+<span class="fc" id="L49">                .status(&quot;ACTIVE&quot;)</span>
+<span class="fc" id="L50">                .createdAt(LocalDateTime.now())</span>
+<span class="fc" id="L51">                .updatedAt(LocalDateTime.now())</span>
+<span class="fc" id="L52">                .build();</span>
+
+<span class="fc" id="L54">        return flightInventoryRepository.save(inventory)</span>
+<span class="fc" id="L55">                .doOnSuccess(saved -&gt; log.info(&quot;Flight inventory added: {}&quot;, saved.getFlightNumber()));</span>
+    }
+
+    @Override
+    public Mono&lt;FlightInventory&gt; getFlightById(Long id) {
+<span class="fc" id="L60">        return flightInventoryRepository.findById(id)</span>
+<span class="fc" id="L61">                .doOnSuccess(flight -&gt; log.info(&quot;Retrieved flight: {}&quot;, flight));</span>
+    }
+
+    @Override
+    public Mono&lt;Boolean&gt; reduceSeats(Long flightId, Integer seats) {
+<span class="fc" id="L66">        return flightInventoryRepository.reduceAvailableSeats(flightId, seats)</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">                .map(updated -&gt; updated &gt; 0)</span>
+<span class="fc" id="L68">                .doOnSuccess(success -&gt; log.info(&quot;Reduced {} seats for flight {}: {}&quot;, seats, flightId, success));</span>
+    }
+
+    @Override
+    public Mono&lt;Boolean&gt; restoreSeats(Long flightId, Integer seats) {
+<span class="fc" id="L73">        return flightInventoryRepository.increaseAvailableSeats(flightId, seats)</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">                .map(updated -&gt; updated &gt; 0)</span>
+<span class="fc" id="L75">                .doOnSuccess(success -&gt; log.info(&quot;Restored {} seats for flight {}: {}&quot;, seats, flightId, success));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
