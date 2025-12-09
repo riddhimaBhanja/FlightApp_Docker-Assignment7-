@@ -1,4 +1,0 @@
-com\flightapp\gateway\config\GatewayConfig.class
-com\flightapp\gateway\filter\JwtAuthenticationFilter.class
-com\flightapp\gateway\ApiGatewayApplication.class
-com\flightapp\gateway\util\JwtUtil.class
