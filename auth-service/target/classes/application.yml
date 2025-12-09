@@ -1,0 +1,42 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: auth-service
+  r2dbc:
+    url: r2dbc:mysql://${DB_HOST:localhost}:3306/${DB_NAME:flightapp_auth}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:password}
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.value}
+
+jwt:
+  secret: ${JWT_SECRET:mySecretKeyForJWTTokenGenerationAndValidationMustBeLongEnough1234567890}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.flightapp.auth: DEBUG
+    org.springframework.r2dbc: DEBUG
