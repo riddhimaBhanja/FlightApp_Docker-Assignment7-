@@ -1,0 +1,5 @@
+com\flightapp\booking\messaging\EmailServiceTest.class
+com\flightapp\booking\DtoAndEntityTest.class
+com\flightapp\booking\BookingControllerTest.class
+com\flightapp\booking\BookingServiceTest.class
+com\flightapp\booking\messaging\EmailConsumerTest.class
