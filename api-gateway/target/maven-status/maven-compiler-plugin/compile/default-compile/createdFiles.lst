@@ -1,0 +1,8 @@
+com\flightapp\gateway\dto\ValidateTokenResponse.class
+com\flightapp\gateway\ApiGatewayApplication.class
+com\flightapp\gateway\config\WebClientConfig.class
+com\flightapp\gateway\config\GatewayConfig.class
+com\flightapp\gateway\dto\ValidateTokenRequest.class
+com\flightapp\gateway\dto\ValidateTokenRequest$ValidateTokenRequestBuilder.class
+com\flightapp\gateway\dto\ValidateTokenResponse$ValidateTokenResponseBuilder.class
+com\flightapp\gateway\filter\JwtAuthenticationFilter.class
