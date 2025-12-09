@@ -1,8 +1,5 @@
 version: '3.8'
 
-# Development version - Only infrastructure services
-# Use this when you want to run microservices locally for development
-
 services:
   # MySQL Database for Flight Service
   mysql:
